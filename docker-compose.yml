@@ -1,0 +1,35 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        - GH_API_KEY
+    ports:
+      - '3000:3000'
+    read_only: true
+    volumes:
+      - '../../configs/user-data-service:/sandbox'
+      # - './static:/app/static'
+    environment: 
+      db__host: user-data-service-db
+      db__username: user-data-service
+      db__password: user-data-service
+      db__database: user-data-service
+    depends_on:
+      user-data-service-db:
+        condition: service_healthy
+    links:
+      - user-data-service-db
+
+  user-data-service-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: user-data-service
+      POSTGRES_USER: user-data-service
+      POSTGRES_PASSWORD: user-data-service
+    ports: ["5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -q -h user-data-service-db -U user-data-service"]
+      interval: 2s
+      timeout: 5s
+      retries: 20

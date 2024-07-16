@@ -1,0 +1,15 @@
+{
+  "server": {
+    "port": 3000
+  },
+  "log": {
+    "level": "debug"
+  },
+  "db": {
+    "name": "user-data-service",
+    "host": "user-data-service-db",
+    "port": "5432",
+    "username": "user-data-service",
+    "password": "user-data-service"
+  }
+}
