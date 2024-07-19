@@ -48,11 +48,17 @@ router.get('/:id', async (req, res, next) => {
 });
 
 router.post('/', express.json(), async (req, res, next) => {
-  const { email } = req.body as { email: string };
+  const { email, picture, name } = req.body as {
+    email: string;
+    picture?: string;
+    name?: string;
+  };
   try {
     const user = await userModel.insert({
       id: v4(),
       email,
+      picture,
+      name,
     });
     return res.status(201).json(user);
   } catch (e) {
