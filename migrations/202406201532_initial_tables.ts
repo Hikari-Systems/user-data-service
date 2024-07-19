@@ -5,6 +5,8 @@ export const up = (knex: Knex) =>
     .createTable('user', (t) => {
       t.uuid('id').primary().notNullable();
       t.string('email', 400).notNullable();
+      t.string('name', 400);
+      t.string('picture', 1000);
       t.timestamps();
     })
     .createTable('oauthProfile', (t) => {

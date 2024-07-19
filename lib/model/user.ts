@@ -3,6 +3,8 @@ import { Knex } from 'knex';
 export interface User {
   id: string;
   email: string;
+  name?: string;
+  picture?: string;
 }
 
 const insert = (db: Knex) => (user: User) =>
