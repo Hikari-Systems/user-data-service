@@ -2,8 +2,8 @@ services:
   app:
     build:
       context: .
-      args:
-        - GH_API_KEY
+      secrets: 
+        - ghapikey
     ports:
       - '3000:3000'
     read_only: true
@@ -33,3 +33,7 @@ services:
       interval: 2s
       timeout: 5s
       retries: 20
+
+secrets:
+  ghapikey:
+    environment: GH_API_KEY
