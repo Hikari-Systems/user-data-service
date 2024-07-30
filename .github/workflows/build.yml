@@ -48,7 +48,7 @@ jobs:
           push: true
           platforms: ${{ env.TARGET_ARCHITECTURES }}
           secrets: |
-            ghapikey=${{ secrets.GH_TOKEN }}"
+            "ghapikey=${{ secrets.GH_TOKEN }}"
           tags: |
             ghcr.io/hikari-systems/${{ env.REPO_NAME }}:${{ github.sha }}
             ghcr.io/hikari-systems/${{ env.REPO_NAME }}:${{ env.BRANCH_NAME }}
