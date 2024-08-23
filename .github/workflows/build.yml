@@ -12,15 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     services:
       registry:
-        image: registry:2
+        image: registry:3.0.0-beta.1
         env:
-          REGISTRY_LOG_LEVEL: debug
           REGISTRY_STORAGE: s3
           REGISTRY_STORAGE_S3_ACCESSKEY: ${{ secrets.AWS_ACCESS_KEY_ID }}
           REGISTRY_STORAGE_S3_SECRETKEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           REGISTRY_STORAGE_S3_REGION: ${{ secrets.AWS_REGION }}
           REGISTRY_STORAGE_S3_BUCKET: hikari-docker-registry
-          REGISTRY_STORAGE_CACHE_BLOBDESCRIPTOR: inmemory
           REGISTRY_HTTP_ADDR: :5000
           REGISTRY_HTTP_SECRET: ${{ secrets.DOCKER_REGISTRY_SECRET }}
         ports:
@@ -69,7 +67,7 @@ jobs:
             ghcr.io/hikari-systems/${{ env.REPO_NAME }}:${{ github.sha }}
             ghcr.io/hikari-systems/${{ env.REPO_NAME }}:${{ env.BRANCH_NAME }}
             ghcr.io/hikari-systems/${{ env.REPO_NAME }}:latest
-            localhost:5000/library/${{ env.REPO_NAME }}:${{ github.sha }}
-            localhost:5000/library/${{ env.REPO_NAME }}:${{ env.BRANCH_NAME }}
-            localhost:5000/library/${{ env.REPO_NAME }}:latest
+            localhost:5000/${{ env.REPO_NAME }}:${{ github.sha }}
+            localhost:5000/${{ env.REPO_NAME }}:${{ env.BRANCH_NAME }}
+            localhost:5000/${{ env.REPO_NAME }}:latest
   
