@@ -5,6 +5,9 @@
   "log": {
     "level": "debug"
   },
+  "redis": {
+    "enabled": "false"
+  },
   "db": {
     "name": "user-data-service",
     "host": "user-data-service-db",
