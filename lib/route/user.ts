@@ -59,12 +59,6 @@ router.get('/:id/accessRequest/:key', async (req, res, next) => {
   }
   try {
     const ar = await accessRequestModel.getByUserIdAndKey(id, key);
-    if (!ar) {
-      log.debug(`No accessRequest found for user ${id} key ${key}`);
-      return res
-        .status(204)
-        .send(`No accessRequest found for user ${id} key ${key}`);
-    }
     return res.status(200).json(ar);
   } catch (e) {
     log.error(`Error fetching access request for user ${id} key ${key}`, e);
@@ -97,10 +91,12 @@ router.post('/:userId/accessRequest/:key', async (req, res, next) => {
   try {
     const user = await accessRequestModel.insert({
       id: v4(),
-      decisionTimestamp: undefined,
       userId,
       key,
+      decidedAt: undefined,
       granted: undefined,
+      grantedFrom: undefined,
+      grantedUntil: undefined,
     });
     return res.status(201).json(user);
   } catch (e) {

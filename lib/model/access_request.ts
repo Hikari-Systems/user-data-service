@@ -5,7 +5,9 @@ export interface AccessRequest {
   userId: string;
   key: string;
   granted?: boolean;
-  decisionTimestamp?: Date;
+  decidedAt?: Date;
+  grantedFrom?: Date;
+  grantedUntil?: Date;
 }
 
 const insert = (db: Knex) => (accessRequest: AccessRequest) =>
@@ -41,20 +43,19 @@ const getByUserId =
       .select()
       .from('accessRequest')
       .where('userId', userId)
-      .orderBy('createdAt', 'asc');
+      .orderBy('createdAt', 'desc');
 
 const getByUserIdAndKey =
   (db: Knex) =>
-  (userId: string, key: string): Promise<AccessRequest> =>
+  (userId: string, key: string): Promise<AccessRequest[]> =>
     db
       .select()
       .from('accessRequest')
       .where({ userId, key })
-      .limit(1)
-      .then((r) => (r.length ? r[0] : null));
+      .orderBy('createdAt', 'desc');
 
 const getAll = (db: Knex) => () =>
-  db.select().from('accessRequest').orderBy('createdAt', 'asc');
+  db.select().from('accessRequest').orderBy('createdAt', 'desc');
 
 const del = (db: Knex) => (id: string) => db.del().where('id', id);
 
