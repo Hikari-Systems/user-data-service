@@ -5,6 +5,8 @@ export const up = (knex: Knex) =>
     .createTable('user', (t) => {
       t.uuid('id').primary().notNullable();
       t.string('email', 400).notNullable();
+      t.string('name', 400);
+      t.string('picture', 4000);
       t.timestamps();
     })
     .createTable('oauthProfile', (t) => {
@@ -12,29 +14,7 @@ export const up = (knex: Knex) =>
       t.uuid('userId').notNullable().references('id').inTable('user');
       t.jsonb('profileJson').notNullable();
       t.timestamps();
-    })
-    .createTable('site', (t) => {
-      t.uuid('id').primary().notNullable();
-      t.uuid('userId').notNullable().references('id').inTable('user');
-      t.integer('mapN').notNullable();
-      t.integer('mapX').notNullable();
-      t.integer('mapY').notNullable();
-      t.timestamps();
-    })
-    .createTable('siteImage', (t) => {
-      t.uuid('id').primary().notNullable();
-      t.uuid('siteId').notNullable().references('id').inTable('site');
-      t.timestamps();
-    })
-    .createTable('siteTreatment', (t) => {
-      t.uuid('id').primary().notNullable();
-      t.uuid('siteId').notNullable().references('id').inTable('site');
-      t.timestamps();
     });
 
 export const down = (knex: Knex) =>
-  knex.schema
-    .dropTable('siteTreatment')
-    .dropTable('siteImage')
-    .dropTable('site')
-    .dropTable('user');
+  knex.schema.dropTable('oauthProfile').dropTable('user');

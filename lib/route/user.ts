@@ -2,7 +2,7 @@ import express from 'express';
 import { v4 } from 'uuid';
 import { logging } from '@hikari-systems/hs.utils';
 
-import { userModel } from '../model';
+import { accessRequestModel, userModel } from '../model';
 
 const log = logging('routes:user');
 
@@ -47,16 +47,60 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
+router.get('/:id/accessRequest/:key', async (req, res, next) => {
+  const { id, key } = req.params as { id: string; key: string };
+  if (!id) {
+    log.debug(`No id provided`);
+    return res.status(400).send(`No id provided`);
+  }
+  if (!key) {
+    log.debug(`No key provided`);
+    return res.status(400).send(`No key provided`);
+  }
+  try {
+    const ar = await accessRequestModel.getByUserIdAndKey(id, key);
+    return res.status(200).json(ar);
+  } catch (e) {
+    log.error(`Error fetching access request for user ${id} key ${key}`, e);
+    return next(e);
+  }
+});
+
 router.post('/', express.json(), async (req, res, next) => {
-  const { email } = req.body as { email: string };
+  const { email, picture, name } = req.body as {
+    email: string;
+    picture?: string;
+    name?: string;
+  };
   try {
     const user = await userModel.insert({
       id: v4(),
       email,
+      picture,
+      name,
     });
     return res.status(201).json(user);
   } catch (e) {
     log.error(`Error adding user for ${JSON.stringify(req.body)}`, e);
+    return next(e);
+  }
+});
+
+router.post('/:userId/accessRequest/:key', async (req, res, next) => {
+  const { userId, key } = req.params as { userId: string; key: string };
+  try {
+    const user = await accessRequestModel.insert({
+      id: v4(),
+      userId,
+      key,
+      decidedAt: undefined,
+      granted: undefined,
+      grantedFrom: undefined,
+      grantedUntil: undefined,
+    });
+    return res.status(201).json(user);
+  } catch (e) {
+    log.error(`Error adding access request for user ${userId} key ${key}`, e);
     return next(e);
   }
 });
