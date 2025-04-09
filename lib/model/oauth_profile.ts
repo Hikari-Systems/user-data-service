@@ -3,22 +3,34 @@ import { Knex } from 'knex';
 export interface OauthProfile {
   sub: string;
   userId: string;
-  profileJson: string;
+  profileJson: Record<string, any>;
 }
 
 const insert = (db: Knex) => (oauthProfile: OauthProfile) =>
   db
-    .insert({ ...oauthProfile, createdAt: new Date() })
+    .insert({
+      ...oauthProfile,
+      profileJson: JSON.stringify(oauthProfile.profileJson),
+      createdAt: new Date(),
+    })
     .into('oauthProfile')
     .returning('*')
     .then((r) => r[0]);
 
 const upsert = (db: Knex) => (oauthProfile: OauthProfile) =>
   db
-    .insert({ ...oauthProfile, createdAt: new Date() })
+    .insert({
+      ...oauthProfile,
+      profileJson: JSON.stringify(oauthProfile.profileJson),
+      createdAt: new Date(),
+    })
     .into('oauthProfile')
     .onConflict('sub')
-    .merge({ ...oauthProfile, updatedAt: new Date() })
+    .merge({
+      ...oauthProfile,
+      profileJson: JSON.stringify(oauthProfile.profileJson),
+      updatedAt: new Date(),
+    })
     .returning('*')
     .then((r) => r[0]);
 

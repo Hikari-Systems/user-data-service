@@ -56,7 +56,7 @@ router.put('/', express.json(), async (req, res, next) => {
     const oauthProfile = await oauthProfileModel.upsert({
       sub,
       userId,
-      profileJson,
+      profileJson: JSON.parse(profileJson),
     });
     return res.status(200).json(oauthProfile);
   } catch (e) {

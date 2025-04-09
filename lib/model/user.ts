@@ -5,6 +5,7 @@ export interface User {
   email: string;
   name?: string;
   picture?: string;
+  pictureImageServiceId?: string;
 }
 
 const insert = (db: Knex) => (user: User) =>
