@@ -4,7 +4,7 @@ export const up = (knex: Knex) =>
   knex.schema.createTable('userTermsAcceptance', (t: Knex.TableBuilder) => {
     t.uuid('id').primary();
     t.uuid('userId').notNullable();
-    t.uuid('termsVersion').notNullable();
+    t.string('termsVersion', 20).notNullable();
     t.timestamp('acceptedAt').notNullable();
     t.timestamps();
   });
