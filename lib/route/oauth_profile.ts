@@ -8,21 +8,21 @@ const log = logging('routes:oauthProfile');
 const router = express.Router();
 // const jsonParser = express.json();
 
-router.get('/byEmail', async (req, res, next) => {
-  const { email } = req.query as { email: string };
-  if (!email) {
-    log.debug(`No email provided`);
-    return res.status(400).send(`No email provided`);
+router.get('/byUserId/:userId', async (req, res, next) => {
+  const { userId } = req.params as { userId: string };
+  if (!userId) {
+    log.debug(`No userId provided`);
+    return res.status(400).send(`No userId provided`);
   }
   try {
-    const oauthProfile = await oauthProfileModel.getByEmail(email);
+    const oauthProfile = await oauthProfileModel.getByUserId(userId);
     if (!oauthProfile) {
-      log.debug(`No oauthProfile found for email ${email}`);
-      return res.status(204).send(`No oauthProfile found for email ${email}`);
+      log.debug(`No oauthProfile found for userId ${userId}`);
+      return res.status(204).send(`No oauthProfile found for userId ${userId}`);
     }
     return res.status(200).json(oauthProfile);
   } catch (e) {
-    log.error(`Error fetching oauthProfile for email ${email}`, e);
+    log.error(`Error fetching oauthProfile for userId ${userId}`, e);
     return next(e);
   }
 });
@@ -56,7 +56,7 @@ router.put('/', express.json(), async (req, res, next) => {
     const oauthProfile = await oauthProfileModel.upsert({
       sub,
       userId,
-      profileJson,
+      profileJson: JSON.parse(profileJson),
     });
     return res.status(200).json(oauthProfile);
   } catch (e) {
