@@ -10,6 +10,7 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.runner }}
+    timeout-minutes: 10
     strategy:
       matrix:
         platform: [amd64, arm64]
@@ -53,6 +54,7 @@ jobs:
           docker push localhost:5000/${{ env.REPO_NAME }}:${{ github.sha }}-${{ matrix.platform }}
   merge-manifest:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: build
     services:
       registry:
