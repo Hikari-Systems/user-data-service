@@ -3,22 +3,34 @@ import { Knex } from 'knex';
 export interface OauthProfile {
   sub: string;
   userId: string;
-  profileJson: string;
+  profileJson: Record<string, any>;
 }
 
 const insert = (db: Knex) => (oauthProfile: OauthProfile) =>
   db
-    .insert({ ...oauthProfile, createdAt: new Date() })
+    .insert({
+      ...oauthProfile,
+      profileJson: JSON.stringify(oauthProfile.profileJson),
+      createdAt: new Date(),
+    })
     .into('oauthProfile')
     .returning('*')
     .then((r) => r[0]);
 
 const upsert = (db: Knex) => (oauthProfile: OauthProfile) =>
   db
-    .insert({ ...oauthProfile, createdAt: new Date() })
+    .insert({
+      ...oauthProfile,
+      profileJson: JSON.stringify(oauthProfile.profileJson),
+      createdAt: new Date(),
+    })
     .into('oauthProfile')
     .onConflict('sub')
-    .merge({ ...oauthProfile, updatedAt: new Date() })
+    .merge({
+      ...oauthProfile,
+      profileJson: JSON.stringify(oauthProfile.profileJson),
+      updatedAt: new Date(),
+    })
     .returning('*')
     .then((r) => r[0]);
 
@@ -31,13 +43,13 @@ const getBySub =
       .where('sub', sub)
       .then((r) => (r.length ? r[0] : null));
 
-const getByEmail =
+const getByUserId =
   (db: Knex) =>
-  (email: string): Promise<OauthProfile> =>
+  (userId: string): Promise<OauthProfile> =>
     db
       .select()
       .from('oauthProfile')
-      .where('email', email)
+      .where('userId', userId)
       .then((r) => (r.length ? r[0] : null));
 
 const getAll = (db: Knex) => () =>
@@ -49,7 +61,7 @@ export default (db: Knex) => ({
   insert: insert(db),
   upsert: upsert(db),
   getBySub: getBySub(db),
-  getByEmail: getByEmail(db),
+  getByUserId: getByUserId(db),
   getAll: getAll(db),
   del: del(db),
 });
