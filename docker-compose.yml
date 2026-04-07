@@ -1,0 +1,27 @@
+services:
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    read_only: true
+    volumes:
+      - '../../configs/user-data-service:/sandbox'
+    environment:
+      db__host: user-data-service-db
+      db__username: user-data-service
+      db__password: user-data-service
+    depends_on:
+      user-data-service-db:
+        condition: service_healthy
+
+  user-data-service-db:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: user-data-service
+      POSTGRES_USER: user-data-service
+      POSTGRES_PASSWORD: user-data-service
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user-data-service"]
+      interval: 2s
+      timeout: 5s
+      retries: 20
