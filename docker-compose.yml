@@ -10,6 +10,12 @@ services:
       db__host: user-data-service-db
       db__username: user-data-service
       db__password: user-data-service
+    healthcheck:
+      test: ["/app/server", "healthcheck"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
     depends_on:
       user-data-service-db:
         condition: service_healthy
