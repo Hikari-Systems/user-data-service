@@ -17,6 +17,10 @@ pub fn configure(cfg: &mut web::ServiceConfig) {
             "/api/user/{user_id}/accessRequest/{key}",
             web::post().to(user::create_access_request),
         )
+        .route(
+            "/api/user/{user_id}/accessRequest/{key}/grant",
+            web::post().to(user::create_granted_access_request),
+        )
         .route("/api/user/{id}", web::get().to(user::get))
         .route("/api/user/{id}", web::put().to(user::upsert))
         .route("/api/user/{id}", web::delete().to(user::delete))

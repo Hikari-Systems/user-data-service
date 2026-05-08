@@ -111,6 +111,21 @@ pub async fn create_access_request(
     Ok(HttpResponse::Created().json(ar))
 }
 
+// Insert an access request that is already granted (decided=now,
+// granted_from=now, granted_until=NULL). Used by callers that need to
+// provision an access grant directly (e.g. the dev-only
+// `grantNewUsersFreeAccess` post-login hook in botsafely-controller).
+pub async fn create_granted_access_request(
+    state: web::Data<AppState>,
+    path: web::Path<CreateAccessRequestPath>,
+) -> actix_web::Result<HttpResponse> {
+    let p = path.into_inner();
+    let ar = access_request::insert_granted(&state.pool, p.user_id, &p.key)
+        .await
+        .map_err(actix_web::error::ErrorInternalServerError)?;
+    Ok(HttpResponse::Created().json(ar))
+}
+
 pub async fn delete_access_request(
     state: web::Data<AppState>,
     path: web::Path<Uuid>,

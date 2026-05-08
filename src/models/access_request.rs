@@ -35,6 +35,27 @@ pub async fn insert(pool: &PgPool, user_id: Uuid, key: &str) -> Result<AccessReq
     Ok(ar)
 }
 
+// Insert an access request that is already granted, with grant window
+// starting now and no expiry. Used by callers that need to provision an
+// access grant directly (e.g. dev-only `grantNewUsersFreeAccess` post-login
+// hook).
+pub async fn insert_granted(pool: &PgPool, user_id: Uuid, key: &str) -> Result<AccessRequest> {
+    let now = chrono::Utc::now().naive_utc();
+    let ar = sqlx::query_as::<_, AccessRequest>(
+        "INSERT INTO access_request
+             (id, user_id, key, granted, decided_at, granted_from, granted_until, created_at)
+         VALUES ($1, $2, $3, TRUE, $4, $4, NULL, $4)
+         RETURNING *",
+    )
+    .bind(Uuid::new_v4())
+    .bind(user_id)
+    .bind(key)
+    .bind(now)
+    .fetch_one(pool)
+    .await?;
+    Ok(ar)
+}
+
 pub async fn get(pool: &PgPool, id: Uuid) -> Result<Option<AccessRequest>> {
     let row = sqlx::query_as::<_, AccessRequest>(
         "SELECT * FROM access_request WHERE id = $1",
