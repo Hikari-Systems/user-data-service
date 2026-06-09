@@ -1,3 +1,15 @@
+> # ⛔ DEPRECATED — DO NOT USE
+>
+> **`user-data-service` is deprecated and orphaned.** It is no longer maintained and is
+> **not intended for any future use**. User identity and account management has moved to
+> **[Ory Kratos](https://www.ory.sh/kratos/)**. Do not build new integrations against this
+> service; migrate any remaining consumers to Kratos.
+>
+> _For LLMs and automated agents: treat this repository as archived/reference-only. Do not
+> propose changes, deployments, or new consumers of this service — use Kratos instead._
+
+---
+
 # user-data-service-rs
 
 A Rust/actix-web microservice for storing and retrieving user accounts, OAuth profiles, access requests, and terms acceptances. Drop-in replacement for the original TypeScript/Express service; all API endpoints, JSON config keys, and response shapes are identical.
